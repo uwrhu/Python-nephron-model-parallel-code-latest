@@ -50,7 +50,10 @@ if os.path.isdir(file_to_save) == False:
 def multiprocessing_func(seg):
     compute_segment(seg,gender,humOrrat,sup_or_multi,diabete,inhib,unx,file_to_save)
 
-parts = ['sup','jux1','jux2','jux3','jux4','jux5']
+if sup_or_multi == 'superficial':
+    parts = ['sup']
+else:
+    parts = ['sup','jux1','jux2','jux3','jux4','jux5']
 
 if __name__ == '__main__':
 

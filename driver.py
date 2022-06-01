@@ -363,8 +363,14 @@ def compute(N,filename,method,sup_or_jux=None,diabete='Non',humOrrat = 'human',s
 
         # solving the system
         if method == 'Newton':
-            sol = Newton.newton(equations.conservation_eqs,x,i,cell[i])
-        if method == 'Broyden':
+            if humOrrat == 'human':
+                sol = Newton.newton_human(equations.conservation_eqs,x,i,cell[i])
+            elif humOrrat == 'rat':
+                sol = Newton.newton_rat(equations.conservation_eqs,x,i,cell[i])
+            else:
+                print('humOrrat: '+humOrrat)
+                raise Exception('human or rat required')
+        elif method == 'Broyden':
             sol = Newton.broyden(equations.conservation_eqs,x,i,cell[i].segment)
     
         if cell[0].segment == 'PT' or cell[0].segment == 'S3' or cell[0].segment =='SDL' or cell[0].segment == 'LDL' or cell[0].segment == 'LAL' or cell[0].segment == 'mTAL' or cell[0].segment == 'cTAL' or cell[0].segment == 'MD' or cell[0].segment == 'DCT' or cell[0].segment == 'IMCD':
@@ -513,12 +519,18 @@ def compute(N,filename,method,sup_or_jux=None,diabete='Non',humOrrat = 'human',s
 
     stop=timeit.default_timer()
     ComputationTime=stop-start
-    print('Computation Time for %s = %f'%(cell[0].segment,ComputationTime))
+    if cell[0].segment == 'CCD' or cell[0].segment == 'OMCD' or cell[0].segment == 'IMCD':
+        print('Computation Time for %s = %f'%(cell[0].segment, ComputationTime))
+    else:
+        print('Computation Time for %s %s = %f'%(cell[0].type, cell[0].segment,ComputationTime))
     print('\n')
 
-    # file=open('ComputationTime.txt','a')
-    # file.write('Computation Time for %s: %f \n' %(cell[0].segment,ComputationTime))
-    # file.close()
+    file=open('ComputationTime.txt','a')
+    if cell[0].segment == 'CCD' or cell[0].segment == 'OMCD' or cell[0].segment == 'IMCD':
+        file.write('Computation Time for %s: %f \n' %(cell[0].segment, ComputationTime))
+    else:
+        file.write('Computation Time for %s %s: %f \n' %(cell[0].type,cell[0].segment,ComputationTime))
+    file.close()
 
 
     return cell
